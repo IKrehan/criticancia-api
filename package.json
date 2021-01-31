@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": { "node": "14.15.1" },
   "scripts": {
     "tsc": "tsc",
     "prestart": "rm -rf ./dist && tsc",
     "start": "node ./dist/src/server.js",
-    "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "build": "sucrase ./$npm_package_config_path_source -d ./$npm_package_config_path_dist --transforms typescript,imports",
+    "build:dev": "sucrase ./src -d ./dist --transforms typescript,imports",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "dependencies": {
     "@types/express": "^4.17.11",
