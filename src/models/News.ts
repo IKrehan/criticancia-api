@@ -6,10 +6,12 @@ import User from "./User";
 
 export interface INews {
   id?: string;
-  slug: string;
+  slug?: string;
   thumbnail: string;
   title: string;
   content: string;
+  categoryId?: number;
+  userId?: string
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -50,8 +52,7 @@ Category.hasMany(News);
 
 function slugify (str) {
     var map = {
-        '-' : ' ',
-        '-' : '_',
+        '-' : ' ' || '_',
         'a' : 'á|à|ã|â|À|Á|Ã|Â',
         'e' : 'é|è|ê|É|È|Ê',
         'i' : 'í|ì|î|Í|Ì|Î',
@@ -69,7 +70,7 @@ function slugify (str) {
 };
 
 News.beforeSave(async (news, options) => {
-    const newId = slugify(news.title);
+    const newId = slugify(news.title).toLowerCase();
     news.slug = newId;
 });
 
