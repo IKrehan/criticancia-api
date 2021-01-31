@@ -6,7 +6,6 @@ module.exports = {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
-        defaultValue: UUIDV4
       },
       image: {
           type: Sequelize.STRING
@@ -26,7 +25,19 @@ module.exports = {
       is_adm: {
           type: Sequelize.BOOLEAN,
           defaultValue: false
-      }
+      },
+      api_token: {
+        type: Sequelize.STRING,
+        unique: true
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     });
   },
 

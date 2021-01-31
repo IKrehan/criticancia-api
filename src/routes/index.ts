@@ -1,14 +1,12 @@
 import { Router } from 'express';
 
 // import routes
-
+import auth from './auth';
 
 const router: Router = Router();
 
 // prefixes
-router.use("/", (req, res) => {
-    res.send('Hello World')
-});
+router.use("/auth", auth);
 
 
 export default router;

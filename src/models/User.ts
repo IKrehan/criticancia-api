@@ -1,5 +1,7 @@
 import { Model, DataTypes, UUIDV4 } from "sequelize";
 import db from "../database/index";
+import bcrypt from 'bcrypt';
+
 
 export interface IUser {
   id?: string;
@@ -8,6 +10,7 @@ export interface IUser {
   email: string;
   password: string;
   is_adm: boolean;
+  api_token: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -40,7 +43,17 @@ const User = db.sequelize.define<UserInstance>(
     is_adm: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    api_token: {
+        type: DataTypes.STRING,
+        unique: true
     }
+  });
+
+
+  User.beforeCreate(async (user, options) => {
+    const hashedPassword = (await bcrypt.hash(user.password, 10)).toString();
+    user.password = hashedPassword;
   });
 
 export default User;
