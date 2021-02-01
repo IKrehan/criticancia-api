@@ -5,7 +5,8 @@
   "license": "MIT",
   "engines": { "node": "14.15.1" },
   "scripts": {
-    "build": "tsc",
+    "tsc": "tsc",
+    "prestart": "rm -rf dist && yarn tsc",
     "start": "node ./dist/server.js",
     "dev": "nodemon src/server.ts"
   },
