@@ -6,7 +6,7 @@
   "engines": { "node": "14.15.1" },
   "scripts": {
     "tsc": "tsc",
-    "prestart": "rm -rf dist && yarn tsc",
+    "build": "rm -rf dist && yarn tsc",
     "start": "node ./dist/server.js",
     "dev": "nodemon src/server.ts"
   },
