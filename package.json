@@ -6,11 +6,10 @@
   "engines": { "node": "14.15.1" },
   "scripts": {
     "tsc": "tsc",
-    "prestart": "rm -rf ./dist && tsc",
-    "start": "node ./dist/src/server.js",
+    "start": "node ./dist/server.js",
+
     "dev": "nodemon src/server.ts",
-    "build": "sucrase ./src -d ./dist --transforms typescript,imports",
-    "deploy": "git add . && git commit -m Heroku && git push heroku master"
+    "deploy": "git add . && git commit -m Heroku && git push origin develop"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
