@@ -5,11 +5,9 @@
   "license": "MIT",
   "engines": { "node": "14.15.1" },
   "scripts": {
-    "tsc": "tsc",
+    "build": "tsc",
     "start": "node ./dist/server.js",
-
     "dev": "nodemon src/server.ts",
-    "deploy": "git add . && git commit -m Heroku && git push origin develop"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
