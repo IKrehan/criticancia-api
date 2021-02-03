@@ -1,6 +1,7 @@
 import User from '../models/User';
 import News, { INews } from '../models/News'
 import Category from '../models/Category';
+import news from '../../dist/routes/news';
 
 interface IResponse {
     success: boolean;
@@ -43,7 +44,20 @@ class NewsService {
                 return { success: false, status: 404, message: "News cannot be find" };
             }
 
-            return { success: true, status: 201, message: "News found!", data: newsIndex };
+            const newsIndexResponse = await Promise.all(newsIndex.map(async (news) =>  {
+                const { id, title, slug, thumbnail, content, createdAt, updatedAt, userId, categoryId } = news;
+
+                const categoryObj = await Category.findByPk(categoryId);
+                return {
+                    id, title, slug, thumbnail, content, createdAt, updatedAt, userId,
+                    category: categoryObj.title,
+                    categoryPath: categoryObj.path
+                };
+            }))
+
+            console.log(newsIndexResponse)
+            
+            return { success: true, status: 201, message: "News found!", data: newsIndexResponse };
         }
         catch (err) {
             console.log(err)

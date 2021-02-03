@@ -11,6 +11,8 @@ export interface INews {
   title: string;
   content: string;
   categoryId?: number;
+  category?: string;
+  categoryPath?: string;
   userId?: string
   createdAt?: Date;
   updatedAt?: Date;
