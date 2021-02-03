@@ -22,7 +22,7 @@ class UserController {
     }
 
     public async index(req: Request, res: Response) {
-        const userResponse = await NewsService.index(req.body.category ? req.body.category : '');
+        const userResponse = await NewsService.index(req.params.category || '');
 
         return res.status(userResponse.status).send(userResponse);
     }

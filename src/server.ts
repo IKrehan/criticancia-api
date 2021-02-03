@@ -21,6 +21,6 @@ async function startServer(
   });
 }
 
-const PORT = <number>(process.env.PORT ? process.env.PORT : 3333);
+const PORT = <unknown>process.env.PORT as number || 3333;
 const HOSTNAME = process.env.HOSTNAME;
 startServer(PORT, HOSTNAME);
