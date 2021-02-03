@@ -32,7 +32,7 @@ class NewsService {
             let newsIndex: INews[] = [];
 
             if (category) {
-                const categoryType = await Category.findOne({ where: { title: category } });
+                const categoryType = await Category.findOne({ where: { path: '/'+category } });
                 newsIndex = await News.findAll({ where: { categoryId: categoryType.id } });
 
             } else {
