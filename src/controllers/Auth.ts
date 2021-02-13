@@ -23,7 +23,7 @@ class AuthController {
     }
 
     public async signOut(req: Request, res: Response) {
-        const header = req.header('refresh-token');
+        const header = req.header('refreshToken');
         const refreshToken = header.split(' ')[1];
         
         const signOutResponse = await Auth.signOut(refreshToken);
