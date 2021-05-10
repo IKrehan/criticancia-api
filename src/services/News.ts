@@ -1,6 +1,7 @@
 import User from '../models/User';
 import News, { INews } from '../models/News'
 import Category from '../models/Category';
+import { Op } from 'sequelize';
 
 interface IResponse {
     success: boolean;
@@ -27,14 +28,14 @@ class NewsService {
 
     }
 
-    public async index(category=''): Promise<IResponse> {
+    public async index(category = ''): Promise<IResponse> {
         try {
             let newsIndex: INews[] = [];
+            console.log(category);
 
             if (category) {
-                const categoryType = await Category.findOne({ where: { path: '/'+category } });
+                const categoryType = await Category.findOne({ where: { path: '/' + category } });
                 newsIndex = await News.findAll({ where: { categoryId: categoryType.id } });
-
             } else {
                 newsIndex = await News.findAll();
             }
@@ -43,26 +44,34 @@ class NewsService {
                 return { success: false, status: 404, message: "News cannot be find" };
             }
 
-            const newsIndexResponse = await Promise.all(newsIndex.map(async (news) =>  {
+            const newsIndexResponse = await Promise.all(newsIndex.map(async (news) => {
                 const { id, title, slug, thumbnail, content, createdAt, updatedAt, userId, categoryId } = news;
 
-                const categoryObj = await Category.findByPk(categoryId);
+                const category = await Category.findByPk(categoryId);
                 return {
                     id, title, slug, thumbnail, content, createdAt, updatedAt, userId,
-                    category: categoryObj.title,
-                    categoryPath: categoryObj.path
+                    category: category.title,
+                    categoryPath: category.path
                 };
             }))
 
-            console.log(newsIndexResponse)
-            
             return { success: true, status: 201, message: "News found!", data: newsIndexResponse };
         }
         catch (err) {
             console.log(err)
             return { success: false, status: 404, message: "Unknown error" };
         }
+    }
 
+    public async getOne(slug: string): Promise<IResponse> {
+        try {
+            const news = await News.findOne({ where: { slug: slug } });
+
+            return { success: true, status: 201, message: "News found!", data: news };
+        } catch (err) {
+            console.log(err)
+            return { success: false, status: 404, message: "Unknown error" };
+        }
     }
 
     public async update(newsId: string, newsAttributtes: INews): Promise<IResponse> {

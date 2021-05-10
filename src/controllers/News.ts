@@ -27,6 +27,12 @@ class UserController {
         return res.status(userResponse.status).send(userResponse);
     }
 
+    public async getOne(req: Request, res: Response) {
+        const userResponse = await NewsService.getOne(req.params.slugOrId);
+
+        return res.status(userResponse.status).send(userResponse);
+    }
+
     public async update(req: Request, res: Response) {
         const userResponse = await NewsService.update(req.params.id, req.body);
 

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "engines": { "node": "14.15.1" },
+  "engines": { "node": "14.16.1" },
   "scripts": {
     "tsc": "tsc",
     "build": "rm -rf dist && yarn tsc",
