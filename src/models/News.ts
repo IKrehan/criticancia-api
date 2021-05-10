@@ -59,7 +59,7 @@ Category.hasMany(News);
 
 function slugify(str) {
   var map = {
-    '-': ' ' || '_',
+    ' ': '-' || '_',
     'a': 'á|à|ã|â|À|Á|Ã|Â',
     'e': 'é|è|ê|É|È|Ê',
     'i': 'í|ì|î|Í|Ì|Î',
@@ -70,12 +70,15 @@ function slugify(str) {
   };
 
   for (var pattern in map) {
-    const strNoSpecial = str.replace(/[^\w\s]/gi, '');
-    str = strNoSpecial.replace(new RegExp(map[pattern], 'g'), pattern);
+    str = str.replace(new RegExp(map[pattern], 'g'), pattern);
   };
 
-  return str;
+  return str
+    .replace(/[&\/\|\#,+()ªº$~%.'"’“”–:*?<>{}—-]/g, '')
+    .replace(/\s+/g, " ")
+    .replace(/\s/g, "-")
 };
+
 
 News.beforeSave(async (news, options) => {
   const newId = slugify(news.title).toLowerCase();
