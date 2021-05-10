@@ -29,7 +29,7 @@ class NewsService {
 
     public async index(category = ''): Promise<IResponse> {
         try {
-            let newsIndex: INews[] = [];
+            let newsIndex = [];
             console.log(category);
 
             if (category) {
@@ -44,11 +44,11 @@ class NewsService {
             }
 
             const newsIndexResponse = await Promise.all(newsIndex.map(async (news) => {
-                const { id, title, slug, thumbnail, content, createdAt, updatedAt, userId, categoryId } = news;
+                const { categoryId } = news;
 
                 const category = await Category.findByPk(categoryId);
                 return {
-                    id, title, slug, thumbnail, content, createdAt, updatedAt, userId,
+                    ...news.dataValues,
                     category: category.title,
                     categoryPath: category.path
                 };
