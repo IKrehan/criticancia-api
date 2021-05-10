@@ -31,6 +31,7 @@ class NewsService {
     public async index(category = ''): Promise<IResponse> {
         try {
             let newsIndex: INews[] = [];
+            console.log(category);
 
             if (category) {
                 const categoryType = await Category.findOne({ where: { path: '/' + category } });
