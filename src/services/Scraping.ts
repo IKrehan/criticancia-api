@@ -28,7 +28,7 @@ class Scraping {
 
         let [total, current] = [validCategories.length - 1, 0];
         for (const category of validCategories) {
-            process.stdout.write('\r Scraping Categories Posts ' + `${current++}/${total}`);
+            process.stdout.write('\r[Web Scraping] Scraping Categories Posts ' + `${current++}/${total}`);
 
             const { data: html } = await axios.get('https://jovemnerd.com.br/bunker/categoria' + category);
             if (!html) continue;
@@ -58,7 +58,7 @@ class Scraping {
         [total, current] = [posts.length - 1, 0];
         for (const post of posts) {
             posts[current].content = await this.getContent(post.url)
-            process.stdout.write('\r Scraping Posts Content ' + `${current++}/${total}`);
+            process.stdout.write('\r[Web Scraping] Scraping Posts Content ' + `${current++}/${total}`);
         }
         console.log(`\n[Web Scraping] ${current++}/${total} Scrapped Posts Content`)
 
