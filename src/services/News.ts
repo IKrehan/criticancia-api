@@ -1,7 +1,6 @@
 import User from '../models/User';
 import News, { INews } from '../models/News'
 import Category from '../models/Category';
-import { Op } from 'sequelize';
 
 interface IResponse {
     success: boolean;
