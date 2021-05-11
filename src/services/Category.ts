@@ -40,7 +40,22 @@ class CategoryService {
             console.log(err)
             return { success: false, status: 404, message: "Unknown error" };
         }
+    }
 
+    public async getOne(title: string): Promise<IResponse> {
+        try {
+            const categoryIndex = await Category.findOne({ where: { title } });
+
+            if (!categoryIndex) {
+                return { success: false, status: 404, message: "Categories cannot be find" };
+            }
+
+            return { success: true, status: 201, message: "Categories found!", data: categoryIndex };
+        }
+        catch (err) {
+            console.log(err)
+            return { success: false, status: 404, message: "Unknown error" };
+        }
     }
 
     public async update(categoryId: string, categoryAttributtes: ICategory): Promise<IResponse> {
