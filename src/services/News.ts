@@ -31,19 +31,29 @@ class NewsService {
 
     }
 
-    public async index(query): Promise<IResponse> {
+    public async index(category = null, pagination: { perPage?: number, currentPage?: number } | null = null): Promise<IResponse> {
         try {
-            const category = await Category.findOne({ where: { path: `/${query.category}` } });
-            let newsIndex = await News.findAll(query ? {
-                where: { categoryId: category.id },
-                limit: query.perPage,
-                offset: query.perPage * query.currentPage,
-                attributes: { exclude: ['categoryId'] },
-                include: 'category',
-            } : {
-                attributes: { exclude: ['categoryId'] },
-                include: 'category'
-            });
+            let newsIndex = [];
+            if (!category) {
+                newsIndex = await News.findAll({
+                    attributes: { exclude: ['categoryId'] },
+                    include: 'category',
+                    ...pagination
+                });
+            } else {
+                const categoryRow = await Category.findOne({ where: { path: `/${category}` } });
+
+                if (!categoryRow)
+                    return { success: false, status: 404, message: "Invalid Category" };
+
+                newsIndex = await News.findAll({
+                    where: { categoryId: categoryRow.id },
+                    attributes: { exclude: ['categoryId'] },
+                    include: 'category',
+                    ...pagination
+                });
+            }
+
             const totalNews = await News.count();
 
             if (!newsIndex)
@@ -52,8 +62,8 @@ class NewsService {
             return {
                 success: true, status: 201, message: "News found!",
                 data: {
-                    currentPage: parseInt(query.currentPage) || 0,
-                    totalPages: Math.ceil(totalNews / query.perPage) || 0,
+                    currentPage: pagination?.currentPage,
+                    totalPages: Math.ceil(totalNews / pagination?.perPage),
                     news: newsIndex
                 }
             };
