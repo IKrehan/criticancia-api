@@ -31,19 +31,29 @@ class NewsService {
 
     }
 
-    public async index(query): Promise<IResponse> {
+    public async index(query = null): Promise<IResponse> {
         try {
-            const category = await Category.findOne({ where: { path: `/${query.category}` } });
-            let newsIndex = await News.findAll(query ? {
-                where: { categoryId: category.id },
-                limit: query.perPage,
-                offset: query.perPage * query.currentPage,
-                attributes: { exclude: ['categoryId'] },
-                include: 'category',
-            } : {
-                attributes: { exclude: ['categoryId'] },
-                include: 'category'
-            });
+            let newsIndex = [];
+            if (!query.category) {
+                newsIndex = await News.findAll({
+                    attributes: { exclude: ['categoryId'] },
+                    include: 'category'
+                });
+            } else {
+                const category = await Category.findOne({ where: { path: `/${query.category}` } });
+
+                if (!category)
+                    return { success: false, status: 404, message: "Invalid Category" };
+
+                newsIndex = await News.findAll({
+                    where: { categoryId: category.id },
+                    limit: query.perPage,
+                    offset: query.perPage * query.currentPage,
+                    attributes: { exclude: ['categoryId'] },
+                    include: 'category',
+                });
+            }
+
             const totalNews = await News.count();
 
             if (!newsIndex)

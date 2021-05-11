@@ -21,7 +21,7 @@ class Scraping {
         const DbCategories = (await Category.index()).data as ICategory[];
         const validCategories = DbCategories.map((category) => category.path);
 
-        const DBNews = (await News.index()).data as INews[];
+        const DBNews = (await News.index(null)).data as INews[];
         const DbUrls = DBNews.map((news) => news.url);
 
         const posts = [];
