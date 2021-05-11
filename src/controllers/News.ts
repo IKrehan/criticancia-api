@@ -4,7 +4,7 @@ import { INews } from '../models/News';
 // import services
 import NewsService from "../services/News";
 
-class UserController {
+class NewsController {
     public async store(req: Request, res: Response) {
         const { thumbnail, title, content, categoryId } = req.body
 
@@ -22,7 +22,7 @@ class UserController {
     }
 
     public async index(req: Request, res: Response) {
-        const userResponse = await NewsService.index(req.params.category || '');
+        const userResponse = await NewsService.index(req.query || null);
 
         return res.status(userResponse.status).send(userResponse);
     }
@@ -47,4 +47,4 @@ class UserController {
 };
 
 
-export default new UserController();
+export default new NewsController();

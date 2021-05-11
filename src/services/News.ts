@@ -6,7 +6,11 @@ interface IResponse {
     success: boolean;
     status: number;
     message: string;
-    data?: INews | INews[];
+    data?: {
+        currentPage: number;
+        totalPages: number;
+        news: INews[];
+    } | INews | INews[];
 }
 
 class NewsService {
@@ -27,34 +31,32 @@ class NewsService {
 
     }
 
-    public async index(category = ''): Promise<IResponse> {
+    public async index(query): Promise<IResponse> {
         try {
-            let newsIndex = [];
-            console.log(category);
+            const category = await Category.findOne({ where: { path: `/${query.category}` } });
+            let newsIndex = await News.findAll(query ? {
+                where: { categoryId: category.id },
+                limit: query.perPage,
+                offset: query.perPage * query.currentPage,
+                attributes: { exclude: ['categoryId'] },
+                include: 'category',
+            } : {
+                attributes: { exclude: ['categoryId'] },
+                include: 'category'
+            });
+            const totalNews = await News.count();
 
-            if (category) {
-                const categoryType = await Category.findOne({ where: { path: '/' + category } });
-                newsIndex = await News.findAll({ where: { categoryId: categoryType.id } });
-            } else {
-                newsIndex = await News.findAll();
-            }
-
-            if (!newsIndex) {
+            if (!newsIndex)
                 return { success: false, status: 404, message: "News cannot be find" };
-            }
 
-            const newsIndexResponse = await Promise.all(newsIndex.map(async (news) => {
-                const { categoryId } = news;
-
-                const category = await Category.findByPk(categoryId);
-                return {
-                    ...news.dataValues,
-                    category: category.title,
-                    categoryPath: category.path
-                };
-            }))
-
-            return { success: true, status: 201, message: "News found!", data: newsIndexResponse };
+            return {
+                success: true, status: 201, message: "News found!",
+                data: {
+                    currentPage: parseInt(query.currentPage) || 0,
+                    totalPages: Math.ceil(totalNews / query.perPage) || 0,
+                    news: newsIndex
+                }
+            };
         }
         catch (err) {
             console.log(err)
