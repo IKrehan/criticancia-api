@@ -31,26 +31,26 @@ class NewsService {
 
     }
 
-    public async index(query = null): Promise<IResponse> {
+    public async index(category = null, pagination: { perPage?: number, currentPage?: number } | null = null): Promise<IResponse> {
         try {
             let newsIndex = [];
-            if (!query.category) {
+            if (!category) {
                 newsIndex = await News.findAll({
                     attributes: { exclude: ['categoryId'] },
-                    include: 'category'
+                    include: 'category',
+                    ...pagination
                 });
             } else {
-                const category = await Category.findOne({ where: { path: `/${query.category}` } });
+                const categoryRow = await Category.findOne({ where: { path: `/${category}` } });
 
-                if (!category)
+                if (!categoryRow)
                     return { success: false, status: 404, message: "Invalid Category" };
 
                 newsIndex = await News.findAll({
-                    where: { categoryId: category.id },
-                    limit: query.perPage,
-                    offset: query.perPage * query.currentPage,
+                    where: { categoryId: categoryRow.id },
                     attributes: { exclude: ['categoryId'] },
                     include: 'category',
+                    ...pagination
                 });
             }
 
@@ -62,8 +62,8 @@ class NewsService {
             return {
                 success: true, status: 201, message: "News found!",
                 data: {
-                    currentPage: parseInt(query.currentPage) || 0,
-                    totalPages: Math.ceil(totalNews / query.perPage) || 0,
+                    currentPage: pagination?.currentPage,
+                    totalPages: Math.ceil(totalNews / pagination?.perPage),
                     news: newsIndex
                 }
             };

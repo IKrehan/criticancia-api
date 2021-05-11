@@ -22,7 +22,8 @@ class NewsController {
     }
 
     public async index(req: Request, res: Response) {
-        const userResponse = await NewsService.index(req.query || null);
+        const { perPage, currentPage } = req.query;
+        const userResponse = await NewsService.index(req.query?.category, { perPage: parseInt(perPage as string), currentPage: parseInt(currentPage as string) });
 
         return res.status(userResponse.status).send(userResponse);
     }
