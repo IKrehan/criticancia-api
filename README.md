@@ -2,7 +2,7 @@
 Criticância is a News Website focused on geek/nerd culture. 
 
 ## Live Version ✔
-In this link you can access the website: [https://criticancia-client.vercel.app/](https://criticancia-client.vercel.app/)
+In this link you can access the website: [https://criticancia.krehan.tech](https://criticancia.krehan.tech)
 
 ## Tools 🔧
 
