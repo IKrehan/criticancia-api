@@ -101,13 +101,40 @@ class NewsService {
 
     public async delete(newsId): Promise<IResponse> {
         try {
-            const newsDeleted = await News.findByPk(newsId)
+            const newsDeleted = await News.findByPk(newsId);
+            newsDeleted.destroy();
 
             return { success: true, status: 200, message: "News deleted!", data: newsDeleted };
         }
         catch (err) {
             console.log(err)
             return { success: false, status: 404, message: "Unknown error" };
+        }
+    }
+
+    public async deleteOldNews(toRemain: number): Promise<INews[]> {
+        try {
+            const newsCount = await News.count()
+
+            if (newsCount <= toRemain) return
+
+            const newsToDelete = await News.findAll({
+                order: [
+                    ['createdAt', 'ASC']
+                ],
+                limit: newsCount - toRemain
+            })
+
+            const deleted = []
+            for (const news of newsToDelete) {
+                const del = await this.delete(news.id);
+                deleted.push(del.data)
+            }
+            console.log(deleted.length);
+
+            return deleted
+        } catch (error) {
+            console.log(error);
         }
     }
 }

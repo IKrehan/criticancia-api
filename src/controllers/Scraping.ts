@@ -10,7 +10,7 @@ class UserController {
         try {
             const scrapedPosts = await ScrapingServices.getPosts();
 
-            const total = scrapedPosts.length - 1;
+            const total = scrapedPosts.length;
             let current = 0;
             process.stdout.write("\r" + `[Web Scraping] Saving Posts: ${current}/${total}`);
             for (const post of scrapedPosts) {
@@ -23,7 +23,12 @@ class UserController {
             }
             console.log(`\n[Web Scraping] ${total} Posts Saved on Database!`);
 
-            return res.status(200).send(scrapedPosts);
+            // [Development Config] Delete older post to maintain 100 posts on the DB
+            console.log('[Web Scraping] Deleting old news')
+            await News.deleteOldNews(100);
+
+
+            return res.status(200).send('Web Scraping Completed');
         } catch (err) {
             return res.status(404).send(err.message);
         }
